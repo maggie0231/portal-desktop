@@ -107,7 +107,7 @@ describe('desktop lifecycle', () => {
     const options = {
       clientName: 'Test Desktop', shellURL: () => 'beings://desktop/', errorLog: log(), exclusive: queue.run,
       canCleanup: () => true, cleanup: vi.fn(async () => {}), finishServices: vi.fn(),
-      resumeAfterFailedShutdown: vi.fn(async () => {}), cancelPairing: vi.fn(), closePluginSessions: vi.fn(),
+      resumeAfterFailedShutdown: vi.fn(async () => {}), cancelPairing: vi.fn(), closePluginSessions: vi.fn(), onWindowClose: vi.fn(),
       recoverPlugins: vi.fn(), matchesPlugin: () => false,
     };
     const lifecycle = new DesktopLifecycle(options);

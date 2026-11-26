@@ -33,6 +33,7 @@
     "test:town-ui": "node tests/town-ui.mjs",
     "test:town-civic": "node tests/town-civic.mjs",
     "test:portal-e2e": "node tests/portal-runtime-e2e.mjs",
+    "test:approval-ui": "node tests/approval-dialog-electron.mjs",
     "test:client-lifecycle": "node tests/client-lifecycle.mjs",
     "test:macos-package": "PORTAL_DESKTOP_MAC_PACKAGE_TESTS=1 vitest run tests/macos-package.test.ts",
     "test:macos-upgrade": "node tests/macos-upgrade-e2e.mjs",

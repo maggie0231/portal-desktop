@@ -53,6 +53,7 @@ export function createDesktopApplication(options: DesktopOptions) {
   const { userData, shellURL } = options;
   const connectorNetwork = new ConnectorNetwork(shellURL);
   let closePluginSessions = () => { };
+  let denyPendingApproval = () => { };
   let home: HomeService | undefined;
   let portal: PortalSupervisor;
   let proxy: ChatProxy;
@@ -88,6 +89,7 @@ export function createDesktopApplication(options: DesktopOptions) {
     clientName: options.clientName, shellURL, errorLog, exclusive,
     canCleanup: () => Boolean(portal), cleanup: cleanupForQuit, resumeAfterFailedShutdown,
     cancelPairing: () => cancelTownPairing?.(), closePluginSessions: () => closePluginSessions(),
+    onWindowClose: () => denyPendingApproval(),
     recoverPlugins: () => dshPlugins?.disableAll(), matchesPlugin: pathname => Boolean(dshPlugins?.matches(pathname)),
     finishServices: () => {
       stopBackgroundPoll(); clearInterval(updatePoll); stopResourceMonitor();
@@ -186,6 +188,7 @@ export function createDesktopApplication(options: DesktopOptions) {
     configureLocalSession(shellURL, () => notifications.state.supported && notifications.state.preferences.enabled);
     const commands = await createDesktopCommands({ directory, store, plugins, chatSessions, errorLog, shellURL, window: () => lifecycle.window });
     const { approvalDialogs } = commands;
+    denyPendingApproval = () => approvalDialogs.denyForWindowClose();
     startupNotice = commands.startupNotice || startupNotice;
     const portalController = await createPortalController({
       directory, binary, store, portal, background,
@@ -202,7 +205,7 @@ export function createDesktopApplication(options: DesktopOptions) {
       log: (event, fields) => errorLog.info('home-viewer', JSON.stringify({ event, ...fields })) });
     home = desktopHome.home;
     registerShellIpc({
-      handle, exclusive, directory, store, localFiles, attachmentDownloads, approvalDialogs,
+      handle, exclusive, directory, store, localFiles, attachmentDownloads, approvalDialogs, errorLog,
       window: () => lifecycle.window, browser: () => lifecycle.browser
     });
     desktopNotifications.registerIpc(handle, exclusive);
@@ -221,7 +224,7 @@ export function createDesktopApplication(options: DesktopOptions) {
     registerPortalIpc({
       handle, exclusive, controller: portalController, snapshot,
       network: subagentNetwork, isQuitting: () => lifecycle.quitting,
-      beforeSave: () => { cancelTownPairing?.(); approvalDialogs.cancel(); },
+      beforeSave: () => { cancelTownPairing?.(); approvalDialogs.cancel('settings-change'); },
       afterSave: async () => {
         closePluginSessions(); proxy.abortAll();
         await dshPlugins?.whenReady();

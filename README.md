@@ -231,7 +231,7 @@ Use [Issues](https://github.com/d5z/portal-desktop/issues) for bug reports and p
 3. For code changes, run type checks and relevant tests. For UI changes, include screenshots or a recording and the validation environment. Documentation-only changes need link, command, and example checks.
 4. Explain the problem, behavior change, validation results, and untested platforms in the PR. Update affected documentation, keep both README languages aligned, and distinguish plans from completed work.
 
-Bug reports should include the client version/build identifier, OS and architecture, reproduction steps, and expected and actual behavior. A redacted diagnostic report can help. Do not commit real connection links, tokens, private conversations, personal Portal configuration, Kit secrets, or build artifacts. Portal compatibility changes belong on `codex/portal-desktop-compat`; follow [UPSTREAM.md](UPSTREAM.md) before updating the client submodule reference.
+Bug reports should include the client version/build identifier, OS and architecture, reproduction steps, and expected and actual behavior. A redacted diagnostic report can help. Do not commit real connection links, tokens, private conversations, personal Portal configuration, Kit secrets, or build artifacts. For `portal_dev_zq`, publish Portal compatibility changes on `heart-portal_zq` in the personal fork before updating the client submodule reference. See [UPSTREAM.md](UPSTREAM.md).
 
 ## License and acknowledgments
 

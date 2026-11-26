@@ -229,6 +229,7 @@ const api: DesktopAPI = {
   },
   toolApprovalPending: () => ipcRenderer.invoke('beings:tool-approval-pending'),
   answerToolApproval: (id, allowed) => ipcRenderer.invoke('beings:tool-approval-answer', id, allowed),
+  setToolApprovalMode: (id, mode) => ipcRenderer.invoke('beings:tool-approval-mode', id, mode),
   onToolApproval: callback => {
     const listener = (_event: unknown, value: import('../shared/security').ToolApprovalView | null) => callback(value);
     ipcRenderer.on('beings:tool-approval', listener);

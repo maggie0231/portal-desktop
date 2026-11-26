@@ -1,5 +1,5 @@
 export type PermissionMode = 'supervised' | 'full-access';
-export interface ToolApprovalView { id: string; title: string; message: string; detail: string; expiresAt: number }
+export interface ToolApprovalView { id: string; title: string; message: string; detail: string; expiresAt: number; livePermissionMode?: boolean }
 export function permissionMode(value: unknown): PermissionMode {
   if (value === undefined || value === 'auto-review' || value === 'read-only') return 'supervised';
   if (value === 'supervised' || value === 'full-access') return value;

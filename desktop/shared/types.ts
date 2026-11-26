@@ -109,6 +109,7 @@ export interface DesktopAPI {
   dshPlugins?: import("./dsh-plugins").DshPluginAPI;
   toolApprovalPending?(): Promise<import('./security').ToolApprovalView | null>;
   answerToolApproval?(id: string, allowed: boolean): Promise<void>;
+  setToolApprovalMode?(id: string, mode: import('./security').PermissionMode): Promise<void>;
   onToolApproval?(callback: (value: import('./security').ToolApprovalView | null) => void): () => void;
   checkLocalFiles?(paths: string[]): Promise<boolean[]>;
   revealLocalFile?(path: string): Promise<import('./local-file').LocalFileRevealResult | boolean>;

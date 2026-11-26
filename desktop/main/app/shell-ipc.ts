@@ -3,6 +3,7 @@ import path from 'node:path';
 import { CLIPBOARD_TEXT_MAX_LENGTH } from '../../shared/clipboard';
 import type { ClientBrowser } from '../browser/browser';
 import { ApprovalDialogs } from '../chat/approval-dialogs';
+import type { ClientErrorLog } from './error-log';
 import { AttachmentDownloads } from '../chat/downloads';
 import { editChat } from './context-menu';
 import type { RegisterHandler } from './ipc';
@@ -13,14 +14,22 @@ import { SettingsStore } from './settings';
 import { clientStartup } from './startup';
 export function registerShellIpc(options: {
   handle: RegisterHandler; exclusive: Exclusive; directory: string; store: SettingsStore;
-  localFiles: LocalFilePreviews; attachmentDownloads: AttachmentDownloads; approvalDialogs: ApprovalDialogs;
+  localFiles: LocalFilePreviews; attachmentDownloads: AttachmentDownloads; approvalDialogs: ApprovalDialogs; errorLog: ClientErrorLog;
   window(): BrowserWindow | null; browser(): ClientBrowser | undefined;
 }) {
-  const { handle, exclusive, directory, store, localFiles, attachmentDownloads, approvalDialogs,
+  const { handle, exclusive, directory, store, localFiles, attachmentDownloads, approvalDialogs, errorLog,
     window: getWindow, browser: getBrowser } = options;
   handle('beings:local-file-preview', (reference: unknown) => localFiles.preview(reference));
   handle('beings:tool-approval-pending', () => approvalDialogs.current());
   handle('beings:tool-approval-answer', (id: unknown, allowed: unknown) => approvalDialogs.answer(id, allowed));
+  handle('beings:tool-approval-mode', (id: unknown, mode: unknown) => exclusive(async () => {
+    const pending = approvalDialogs.current();
+    if (!pending || pending.id !== id) throw new Error('审批已过期或不存在');
+    if (!pending.livePermissionMode) throw new Error('此 Portal 版本不支持在审批中切换权限，请先完成本次审批');
+    if (mode !== 'supervised' && mode !== 'full-access') throw new Error('无效的电脑操作权限');
+    await store.save({ ...store.settings, permissionMode: mode });
+    errorLog.info('approval', JSON.stringify({ event: 'permission-mode-saved', id, mode }));
+  }));
   handle('beings:local-files-check', (references: unknown) => localFiles.available(references));
   handle('beings:local-file-reveal', (reference: unknown) => localFiles.reveal(reference, file => shell.showItemInFolder(file)));
   handle('beings:local-file-release', (id: unknown) => localFiles.release(id));

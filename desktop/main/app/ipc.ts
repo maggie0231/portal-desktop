@@ -17,7 +17,7 @@ export function createTrustedHandler(options: {
       const frame = event.senderFrame;
       if (!window || event.sender !== window.webContents || frame !== window.webContents.mainFrame || frame.url !== options.shellURL()) throw new Error('Untrusted IPC sender');
       if (options.isQuitting() && !['beings:browser-bounds', 'beings:diagnostics'].includes(channel)) throw new Error('客户端正在退出，请稍候。');
-      if (options.recoveryBlocked() && ['beings:save', 'beings:portal-stop', 'beings:portal-force-start'].includes(channel)) throw new Error('Portal 升级恢复尚未完成，请点击启动 Portal 重试恢复。');
+      if (options.recoveryBlocked() && ['beings:save', 'beings:tool-approval-mode', 'beings:portal-stop', 'beings:portal-force-start'].includes(channel)) throw new Error('Portal 升级恢复尚未完成，请点击启动 Portal 重试恢复。');
       try { return await callback(...args); }
       catch (error) { throw new Error(options.errorLog.report(channel, error)); }
     });

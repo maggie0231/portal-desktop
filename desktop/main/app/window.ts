@@ -15,6 +15,7 @@ export interface MainWindowOptions {
   markSessionEnding: () => void;
   openExternal: (url: string) => void;
   onBrowser: (browser: ClientBrowser) => void;
+  onWindowClose?: () => void;
   onClosed: (window: BrowserWindow) => void;
   onHideError: (error: unknown) => void;
 }
@@ -84,6 +85,7 @@ export function createMainWindow(options: MainWindowOptions) {
   window.on('close', event => {
     if (options.isQuitting() || options.isSessionEnding()) return;
     event.preventDefault();
+    options.onWindowClose?.();
     void presentation.hide().catch(error => { presentation.show(); options.onHideError(error); });
   });
   // Let Windows logoff/shutdown close the app rather than hide the window.

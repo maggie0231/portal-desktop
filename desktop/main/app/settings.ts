@@ -1,6 +1,7 @@
 import { mkdir, readFile, writeFile, rename, stat } from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
+import { createHmac } from 'node:crypto';
 import { parse } from 'smol-toml';
 import { parseConnection, type Connection } from '../chat/connection';
 import type { Settings, SaveSettings } from '../../shared/types';
@@ -86,7 +87,9 @@ export class SettingsStore {
     if (persist) {
       await mkdir(this.directory, { recursive: true, mode: 0o700 });
       const temporary = path.join(this.directory, 'connection.json.tmp');
-      await writeFile(temporary, JSON.stringify({ version: 1, settings: publicSettings, credential }), { mode: 0o600 });
+      const fullAccessProof = mode === 'full-access' ? createHmac('sha256', connection.token)
+        .update('portal-desktop/full-access/' + connection.endpoint).digest('base64') : undefined;
+      await writeFile(temporary, JSON.stringify({ version: 1, settings: publicSettings, credential, fullAccessProof }), { mode: 0o600 });
       await rename(temporary, path.join(this.directory, 'connection.json'));
     }
     this.connection = connection;

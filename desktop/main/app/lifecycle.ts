@@ -17,6 +17,7 @@ interface LifecycleOptions {
   finishServices(): void;
   resumeAfterFailedShutdown(): Promise<void>;
   cancelPairing(): void;
+  onWindowClose(): void;
   closePluginSessions(): void;
   recoverPlugins(): Promise<unknown> | undefined;
   matchesPlugin(pathname: string): boolean;
@@ -169,6 +170,7 @@ export class DesktopLifecycle {
         } catch { /* Unsupported links stay inside the sandbox. */ }
       },
       onBrowser: value => { this.browser = value; },
+      onWindowClose: this.options.onWindowClose,
       onClosed: value => { if (this.window === value) this.window = null; },
       onHideError: error => {
         const message = errorLog.report('window-hide', error);

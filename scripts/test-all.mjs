@@ -121,6 +121,7 @@ try {
   await npm('chat-sessions', ['run', 'test:chat-sessions']);
   await npm('client-context', ['run', 'test:client-context']);
   await npm('client-lifecycle', ['run', 'test:client-lifecycle']);
+  await npm('approval-ui', ['run', 'test:approval-ui']);
   await npm('portal-runtime', ['run', 'test:portal-e2e']);
   await npm('town-sdk', ['run', 'test:town-sdk']);
   await npm('notifications', ['run', 'test:notifications']);

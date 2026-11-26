@@ -90,7 +90,8 @@
 @media (forced-colors: none) {
   // Chromium keeps :focus-visible when clicking an already focused control and
   // also matches it on text fields. Override component outlines for pointer input.
-  :root[data-pointer-focus] :focus-visible {
+  // Approval buttons always indicate the action that Enter will activate.
+  :root[data-pointer-focus] :focus-visible:not([data-approval-action]) {
     outline: none !important;
   }
 }

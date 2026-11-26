@@ -207,12 +207,12 @@
   padding-left: 0;
 }
 
-.dialog button:disabled {
+.dialog button[aria-disabled='true'] {
   opacity: 0.5;
   cursor: wait;
 }
 
-.dialog button:focus-visible {
+.dialog button:focus {
   @include mixins.focus-ring(var(--secondary), 3px);
 }
 
